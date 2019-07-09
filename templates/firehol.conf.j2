@@ -1,0 +1,11 @@
+version 6
+
+FIREHOL_DROP_ORPHAN_TCP_ACK_FIN=1
+FIREHOL_LOG_PREFIX="FireHOL: "
+
+interface {{ wan_interface }} world
+    protection strong
+    server "{{ " ".join(allow_services) }}" accept
+    server "ipv6neigh ipv6router ipv6error" accept
+    client "ipv6neigh ipv6router" accept
+    client all accept
