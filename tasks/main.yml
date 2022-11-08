@@ -1,14 +1,30 @@
 ---
 
 - name: firehol package is installed
-  apt: pkg=firehol state=present
+  apt:
+    pkg: firehol
+    state: present
 
 - name: firehol.conf is present
-  template: src=firehol.conf.j2 dest=/etc/firehol/firehol.conf mode=0644
+  template:
+    src: firehol.conf.j2
+    dest: /etc/firehol/firehol.conf
+    mode: 0644
   notify:
    - restart firehol
 
 - name: firehol is enabled
-  lineinfile: dest=/etc/default/firehol regexp=^START_FIREHOL= line=START_FIREHOL=YES
+  lineinfile:
+    dest: /etc/default/firehol
+    regexp: "^START_FIREHOL="
+    line: "START_FIREHOL=YES"
+  notify:
+   - restart firehol
+
+- name: log is redirected to NFLOG
+  lineinfile:
+    dest: /etc/firehol/firehol-defaults.conf
+    regexp: '^#?FIREHOL_LOG_MODE='
+    line: 'FIREHOL_LOG_MODE="NFLOG"'
   notify:
    - restart firehol
